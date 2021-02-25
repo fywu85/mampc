@@ -1,1 +1,1 @@
-# mampc
+# Memory-Augmented Model Predictive Control
