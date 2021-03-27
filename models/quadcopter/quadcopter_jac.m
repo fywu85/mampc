@@ -1,0 +1,56 @@
+function [A, B] = quadcopter_jac(x, u)
+    m = 1.1;
+    l = 0.21;
+    Ixx = 0.0196;
+    Iyy = 0.0196;
+    Izz = 0.0264;
+    Ip = 8.5e-4;
+    b = 9.29e-5;
+    d = 1.1e-6;
+    g = 9.81;
+
+    x1 = x(1);
+    x1d = x(2);
+    x2 = x(3);
+    x2d = x(4);
+    x3 = x(5);
+    x3d = x(6);
+    x4 = x(7);
+    x4d = x(8);
+    x5 = x(9);
+    x5d = x(10);
+    x6 = x(11);
+    x6d = x(12);
+    u1 = u(1);
+    u2 = u(2);
+    u3 = u(3);
+    u4 = u(4);
+    
+    A = zeros(12, 12);
+    A(1,  :) = [0, 1, 0, 0, 0, 0,                                                                              0,                                                    0,                                                         0,                                                    0,                                                                             0,                      0];
+    A(2,  :) = [0, 0, 0, 0, 0, 0,  (b*(cos(x4)*sin(x6) - cos(x6)*sin(x4)*sin(x5))*(u1^2 + u2^2 + u3^2 + u4^2))/m,                                                    0, (b*cos(x4)*cos(x5)*cos(x6)*(u1^2 + u2^2 + u3^2 + u4^2))/m,                                                    0, (b*(cos(x6)*sin(x4) - cos(x4)*sin(x5)*sin(x6))*(u1^2 + u2^2 + u3^2 + u4^2))/m,                      0];
+    A(3,  :) = [0, 0, 0, 1, 0, 0,                                                                              0,                                                    0,                                                         0,                                                    0,                                                                             0,                      0];
+    A(4,  :) = [0, 0, 0, 0, 0, 0, -(b*(cos(x4)*cos(x6) + sin(x4)*sin(x5)*sin(x6))*(u1^2 + u2^2 + u3^2 + u4^2))/m,                                                    0, (b*cos(x4)*cos(x5)*sin(x6)*(u1^2 + u2^2 + u3^2 + u4^2))/m,                                                    0, (b*(sin(x4)*sin(x6) + cos(x4)*cos(x6)*sin(x5))*(u1^2 + u2^2 + u3^2 + u4^2))/m,                      0];
+    A(5,  :) = [0, 0, 0, 0, 0, 1,                                                                              0,                                                    0,                                                         0,                                                    0,                                                                             0,                      0];
+    A(6,  :) = [0, 0, 0, 0, 0, 0,                             -(b*cos(x5)*sin(x4)*(u1^2 + u2^2 + u3^2 + u4^2))/m,                                                    0,        -(b*cos(x4)*sin(x5)*(u1^2 + u2^2 + u3^2 + u4^2))/m,                                                    0,                                                                             0,                      0];
+    A(7,  :) = [0, 0, 0, 0, 0, 0,                                                                              0,                                                    1,                                                         0,                                                    0,                                                                             0,                      0];
+    A(8,  :) = [0, 0, 0, 0, 0, 0,                                                                              0,                                                    0,                                                         0, (x6d*(Iyy - Izz))/Ixx - (Ip*(u1 - u2 + u3 - u4))/Ixx,                                                                             0,  (x5d*(Iyy - Izz))/Ixx];
+    A(9,  :) = [0, 0, 0, 0, 0, 0,                                                                              0,                                                    0,                                                         0,                                                    1,                                                                             0,                      0];
+    A(10, :) = [0, 0, 0, 0, 0, 0,                                                                              0, (Ip*(u1 - u2 + u3 - u4))/Iyy - (x6d*(Ixx - Izz))/Iyy,                                                         0,                                                    0,                                                                             0, -(x4d*(Ixx - Izz))/Iyy];
+    A(11, :) = [0, 0, 0, 0, 0, 0,                                                                              0,                                                    0,                                                         0,                                                    0,                                                                             0,                      1];
+    A(12, :) = [0, 0, 0, 0, 0, 0,                                                                              0,                                (x5d*(Ixx - Iyy))/Izz,                                                         0,                                (x4d*(Ixx - Iyy))/Izz,                                                                             0,                      0];
+    
+    B = zeros(12, 4);
+    B(1,  :) = [                                                      0,                                                       0,                                                       0,                                                       0];
+    B(2,  :) = [ (2*b*u1*(sin(x4)*sin(x6) + cos(x4)*cos(x6)*sin(x5)))/m,  (2*b*u2*(sin(x4)*sin(x6) + cos(x4)*cos(x6)*sin(x5)))/m,  (2*b*u3*(sin(x4)*sin(x6) + cos(x4)*cos(x6)*sin(x5)))/m,  (2*b*u4*(sin(x4)*sin(x6) + cos(x4)*cos(x6)*sin(x5)))/m];
+    B(3,  :) = [                                                      0,                                                       0,                                                       0,                                                       0];
+    B(4,  :) = [-(2*b*u1*(cos(x6)*sin(x4) - cos(x4)*sin(x5)*sin(x6)))/m, -(2*b*u2*(cos(x6)*sin(x4) - cos(x4)*sin(x5)*sin(x6)))/m, -(2*b*u3*(cos(x6)*sin(x4) - cos(x4)*sin(x5)*sin(x6)))/m, -(2*b*u4*(cos(x6)*sin(x4) - cos(x4)*sin(x5)*sin(x6)))/m];
+    B(5,  :) = [                                                      0,                                                       0,                                                       0,                                                       0];
+    B(6,  :) = [                             (2*b*u1*cos(x4)*cos(x5))/m,                              (2*b*u2*cos(x4)*cos(x5))/m,                              (2*b*u3*cos(x4)*cos(x5))/m,                              (2*b*u4*cos(x4)*cos(x5))/m];
+    B(7,  :) = [                                                      0,                                                       0,                                                       0,                                                       0];
+    B(8,  :) = [                                          -(Ip*x5d)/Ixx,                           (Ip*x5d)/Ixx + (2*b*l*u2)/Ixx,                                           -(Ip*x5d)/Ixx,                           (Ip*x5d)/Ixx - (2*b*l*u4)/Ixx];
+    B(9,  :) = [                                                      0,                                                       0,                                                       0,                                                       0];
+    B(10, :) = [                          (Ip*x4d)/Iyy - (2*b*l*u1)/Iyy,                                           -(Ip*x4d)/Iyy,                           (Ip*x4d)/Iyy + (2*b*l*u3)/Iyy,                                           -(Ip*x4d)/Iyy];
+    B(11, :) = [                                                      0,                                                       0,                                                       0,                                                       0];
+    B(12, :) = [                                          -(2*d*u1)/Izz,                                            (2*d*u2)/Izz,                                           -(2*d*u3)/Izz,                                            (2*d*u4)/Izz];
+end
