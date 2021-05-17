@@ -10,11 +10,15 @@ function [unn, nn_switch] = is_converge(x, r, H, params)
     %x = mpc_params.A * x + mpc_params.B * u;
     for iter = 1:H
         state_violate = false;
-        for i = 1:length(x)
-            state_violate = state_violate || ...
-                x(i) < 1.1*(params.xmin(i) + params.x_eq(i));
-            state_violate = state_violate || ...
-                x(i) > 1.1*(params.xmax(i) + params.x_eq(i));
+        if isfield(params, 'rwp') && r < params.rwp
+            state_violate = state_violate || norm(x, 2) > params.rwp;
+        else
+            for i = 1:length(x)
+                state_violate = state_violate || ...
+                    x(i) < 1.1*(params.xmin(i) + params.x_eq(i));
+                state_violate = state_violate || ...
+                    x(i) > 1.1*(params.xmax(i) + params.x_eq(i));
+            end
         end
         input_violate = false;
         for i = 1:length(u)
@@ -24,8 +28,8 @@ function [unn, nn_switch] = is_converge(x, r, H, params)
                 u(i) > 1.1*(params.umax(i) + params.u_eq(i));
         end
         if state_violate || input_violate
-            fprintf('Violation detected.\n');
-            fprintf('State %d Input %d\n', state_violate, input_violate);
+            %fprintf('Violation detected.\n');
+            %fprintf('State %d Input %d\n', state_violate, input_violate);
             break
         elseif norm(x, 2) < r
             nn_switch = true;

@@ -45,7 +45,7 @@ function params = set_params()
     params.rwp = 2;
     params.Hlqr = 10;
     params.Hwp = 10;
-    params.cycle = 2;
+    %params.cycle = 2;
     %% Misc params
     params.plot = @plot_quadcopter;
 end

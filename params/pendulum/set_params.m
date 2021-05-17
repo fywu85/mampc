@@ -31,10 +31,10 @@ function params = set_params()
     %% MAMPC params
     params.run_mampc = @run_mampc_std;
     params.rlqr = 0.5;
-    params.rwp = 1;
+    % params.rwp = 1;
     params.Hlqr = 5;
-    params.Hwp = 5;
-    params.cycle = 3;
+    %params.Hwp = 5;
+    %params.cycle = 3;
     %% Misc params
     params.plot = @plot_pendulum;
 end

@@ -30,10 +30,10 @@ function params = set_params()
     params.maxepoch = 1e3;
     %% MAMPC params
     params.run_mampc = @run_mampc_var1;
-    params.rlqr = 0.5;
-    params.rwp = 1;
+    params.rlqr = 0.4;
+    %params.rwp = 1;
     params.Hlqr = 5;
-    params.Hwp = 5;
+    %params.Hwp = 5;
     params.cycle = 2;
     %% Misc params
     params.plot = @plot_triplependulum;

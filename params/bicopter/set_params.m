@@ -38,10 +38,10 @@ function params = set_params()
     %% MAMPC params
     params.run_mampc = @run_mampc_std;
     params.rlqr = 0.5;
-    params.rwp = 1;
+    %params.rwp = 1;
     params.Hlqr = 10;
-    params.Hwp = 5;
-    params.cycle = 2;
+    %params.Hwp = 5;
+    %params.cycle = 2;
     %% Misc params
     params.plot = @plot_bicopter;
 end

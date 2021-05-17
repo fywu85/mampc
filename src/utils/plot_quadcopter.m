@@ -1,61 +1,108 @@
 function [] = plot_quadcopter(...
-        t_sol_mpc, x_sol_mpc, u_sol_mpc, elapsed_mpc, ...
-        t_sol_expmpc, x_sol_expmpc, u_sol_expmpc, elapsed_expmpc, ...
-        t_sol_mampc, x_sol_mampc, u_sol_mampc, ...
-        u_sol_type_mampc, elapsed_mampc)
-    mpc_indices = find(u_sol_type_mampc == 'mpc');
-    nn_indices = find(u_sol_type_mampc == 'nn');
-    lqr_indices = find(u_sol_type_mampc == 'lqr');
-    
-    figure;
-    hold on;
-    state_indices = 11;
-    stairs(t_sol_mpc, x_sol_mpc(:, state_indices), 'r', 'LineWidth', 2);
-    stairs(t_sol_expmpc, x_sol_expmpc(:, state_indices), 'b', 'LineWidth', 2);
-    stairs(t_sol_mampc, x_sol_mampc(:, state_indices), 'm', 'LineWidth', 2);
-    stairs(t_sol_mampc(mpc_indices), x_sol_mampc(mpc_indices, state_indices), ...
-        'm*', 'MarkerSize', 14, 'LineWidth', 2);
-    stairs(t_sol_mampc(nn_indices), x_sol_mampc(nn_indices, state_indices), ...
-        'mo', 'MarkerSize', 14, 'LineWidth', 2);
-    stairs(t_sol_mampc(lqr_indices), x_sol_mampc(lqr_indices, state_indices), ...
-        'mx', 'MarkerSize', 14, 'LineWidth', 2);
-    hold off;
-    xlabel('t');
-    ylabel('x');
-    legend('MPC', 'Exp. MPC', 'MAMPC');
-    
-    figure;
-    hold on;
-    input_indices = 1;
-    stairs(t_sol_mpc(1:end-1, input_indices), u_sol_mpc, 'r', 'LineWidth', 2);
-    stairs(t_sol_expmpc(1:end-1, input_indices), u_sol_expmpc, 'b', 'LineWidth', 2);
-    stairs(t_sol_mampc(1:end-1, input_indices), u_sol_mampc, 'm', 'LineWidth', 2);
-    stairs(t_sol_mampc(mpc_indices), u_sol_mampc(mpc_indices, input_indices), ...
-        'm*', 'MarkerSize', 14, 'LineWidth', 2);
-    stairs(t_sol_mampc(nn_indices), u_sol_mampc(nn_indices, input_indices), ...
-        'mo', 'MarkerSize', 14, 'LineWidth', 2);
-    stairs(t_sol_mampc(lqr_indices), u_sol_mampc(lqr_indices, input_indices), ...
-        'mx', 'MarkerSize', 14, 'LineWidth', 2);
-    hold off;
-    xlabel('t');
-    ylabel('u');
-    legend('MPC', 'Exp. MPC', 'MAMPC');
-    
-    figure;
-    hold on;
-    stairs(t_sol_mpc(1:end-1, 1), elapsed_mpc, 'r', 'LineWidth', 2);
-    stairs(t_sol_expmpc(1:end-1, 1), elapsed_expmpc, 'b', 'LineWidth', 2);
-    stairs(t_sol_mampc(1:end-1, 1), elapsed_mampc, 'm', 'LineWidth', 2);
-    stairs(t_sol_mampc(mpc_indices), elapsed_mampc(mpc_indices, 1), ...
-        'm*', 'MarkerSize', 14, 'LineWidth', 2);
-    stairs(t_sol_mampc(nn_indices), elapsed_mampc(nn_indices, 1), ...
-        'mo', 'MarkerSize', 14, 'LineWidth', 2);
-    stairs(t_sol_mampc(lqr_indices), elapsed_mampc(lqr_indices, 1), ...
-        'mx', 'MarkerSize', 14, 'LineWidth', 2);
-    hold off;
-    set(gca, 'YScale', 'log');
-    xlabel('t');
-    ylabel('Running Time');
-    legend('MPC', 'Exp. MPC', 'MAMPC');
+        t_sol_mpc, x_sol_mpc, elapsed_mpc, ...
+        t_sol_expmpc, x_sol_expmpc, elapsed_expmpc, ...
+        elapsed_nn, t_sol_mampc, x_sol_mampc, ...
+        u_sol_type_mampc, elapsed_mampc, params)
+    mpc_indices_all = find(u_sol_type_mampc == 'mpc');
+    nn_indices_all = find(u_sol_type_mampc == 'nn');
+    lqr_indices_all = find(u_sol_type_mampc == 'lqr');
+    print_stats('results/quadcopter/stats.txt', ...
+        elapsed_mpc, elapsed_expmpc, elapsed_mampc, elapsed_nn, ...
+        mpc_indices_all(2:end), nn_indices_all, lqr_indices_all);
 
+    t_sol_mpc = t_sol_mpc(1:3:end);
+    x_sol_mpc = x_sol_mpc(1:3:end, :);
+    elapsed_mpc = elapsed_mpc(1:3:end);
+    t_sol_expmpc = t_sol_expmpc(1:3:end);
+    x_sol_expmpc = x_sol_expmpc(1:3:end, :);
+    elapsed_expmpc = elapsed_expmpc(1:3:end);
+    
+    mpc_indices = find(u_sol_type_mampc == 'mpc');
+    mpc_indices = mpc_indices(2:3:end);
+    nn_indices = find(u_sol_type_mampc == 'nn');
+    nn_indices = nn_indices(1:2:end);
+    lqr_indices = find(u_sol_type_mampc == 'lqr');
+    lqr_indices = lqr_indices(1:3:end);
+    
+    figure;
+    set(gcf, 'position', [1000, 1000, 750, 300]);
+    set(gca, 'FontSize', 18);
+    set(gca, 'linewidth', 2);
+    box on;
+    hold on;
+    plot(t_sol_mpc, vecnorm(x_sol_mpc, 2, 2), ...
+        'mo-', 'MarkerSize', 18, 'LineWidth', 2);
+    plot(t_sol_expmpc, vecnorm(x_sol_expmpc, 2, 2), ...
+        'b*-', 'MarkerSize', 18, 'LineWidth', 2);
+    plot(t_sol_mampc(mpc_indices(2)), ...
+        vecnorm(x_sol_mampc(mpc_indices(2), :), 2, 2), ...
+        'rs-', 'MarkerSize', 18, 'LineWidth', 2);
+    plot(t_sol_mampc(nn_indices(2)), ...
+        vecnorm(x_sol_mampc(nn_indices(2), :), 2, 2), ...
+        'r^-', 'MarkerSize', 18, 'LineWidth', 2);
+    plot(t_sol_mampc(lqr_indices(1)), ...
+        vecnorm(x_sol_mampc(lqr_indices(1), :), 2, 2), ...
+        'rp-', 'MarkerSize', 18, 'LineWidth', 2);
+    yline(params.rwp, 'k--', 'LineWidth', 2);
+    yline(params.rlqr, 'k:', 'LineWidth', 2);
+    plot(t_sol_mampc(mpc_indices), ...
+        vecnorm(x_sol_mampc(mpc_indices, :), 2, 2), ...
+        'rs', 'MarkerSize', 18, 'LineWidth', 2);
+    plot(t_sol_mampc(nn_indices), ...
+        vecnorm(x_sol_mampc(nn_indices, :), 2, 2), ...
+        'r^', 'MarkerSize', 18, 'LineWidth', 2);
+    plot(t_sol_mampc(lqr_indices), ...
+        vecnorm(x_sol_mampc(lqr_indices, :), 2, 2), ...
+        'rp', 'MarkerSize', 18, 'LineWidth', 2);
+    plot(t_sol_mampc, vecnorm(x_sol_mampc, 2, 2), 'r', 'LineWidth', 2);
+    xlim([0, 11.4]);
+    %ylim([1e-2, 5]);
+    set(gca, 'YScale', 'log');
+    xlabel('Simulation Time (s)');
+    ylabel('State Norm ||x||_2');
+    legend('Imp. MPC', 'Exp. MPC', ...
+        'MAMPC-MPC', 'MAMPC-NN', 'MAMPC-LQR', 'R-WP', 'R-LQR', ...
+        'Location', 'eastoutside', 'Box', 'off');
+    exportgraphics(gcf, 'results/quadcopter/quadcopter_state.eps');
+    exportgraphics(gcf, 'results/quadcopter/quadcopter_state.png', ...
+        'Resolution', 300);
+
+    figure;
+    set(gcf, 'position', [1000, 1000, 750, 300]);
+    set(gca, 'FontSize', 18);
+    set(gca, 'linewidth', 2);
+    box on;
+    hold on;
+    plot(t_sol_mpc(2:end), elapsed_mpc(2:end), ...
+        'mo-', 'MarkerSize', 18, 'LineWidth', 2);
+    plot(t_sol_expmpc(2:end), elapsed_expmpc(2:end), ...
+        'b*-', 'MarkerSize', 18, 'LineWidth', 2);
+    plot(t_sol_mampc(mpc_indices(1)), elapsed_mampc(mpc_indices(1)), ...
+        'rs-', 'MarkerSize', 18, 'LineWidth', 2);
+    plot(t_sol_mampc(nn_indices(1)), elapsed_mampc(nn_indices(1)), ...
+        'r^-', 'MarkerSize', 18, 'LineWidth', 2);
+    plot(t_sol_mampc(lqr_indices(1)), elapsed_mampc(lqr_indices(1)), ...
+        'rp-', 'MarkerSize', 18, 'LineWidth', 2);
+    yline(median(elapsed_nn), 'k:', 'LineWidth', 2);
+    %mpc_indices = mpc_indices(2:end);
+    plot(t_sol_mampc(mpc_indices), elapsed_mampc(mpc_indices), ...
+        'rs', 'MarkerSize', 18, 'LineWidth', 2);
+    plot(t_sol_mampc(nn_indices), elapsed_mampc(nn_indices), ...
+        'r^', 'MarkerSize', 18, 'LineWidth', 2);
+    plot(t_sol_mampc(lqr_indices), elapsed_mampc(lqr_indices), ...
+        'rp', 'MarkerSize', 18, 'LineWidth', 2);
+    plot(t_sol_mampc(2:end-1), elapsed_mampc(2:end), ...
+        'r', 'LineWidth', 2);
+    hold off;
+    xlim([0, 11.4]);
+    ylim([1e-6, 5e-3]);
+    set(gca, 'YScale', 'log');
+    xlabel('Simulation Time (s)');
+    ylabel('Running Time (s)');
+    legend('Imp. MPC', 'Exp. MPC', ...
+        'MAMPC-MPC', 'MAMPC-NN', 'MAMPC-LQR', 'NN', ...
+        'Location', 'eastoutside', 'Box', 'off');
+    exportgraphics(gcf, 'results/quadcopter/quadcopter_time.eps');
+    exportgraphics(gcf, 'results/quadcopter/quadcopter_time.png', ...
+        'Resolution', 300);
 end

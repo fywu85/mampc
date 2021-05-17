@@ -1,0 +1,11 @@
+Total MPC: 			 1.27e-02 s
+Total Exp. MPC: 	 7.46e-03 s
+Total MAMPC: 		 7.18e-03 s
+MAMPC Time %: 		 (MPC) 92.831%	 (NN) 6.879%	 (LQR) 0.290%
+MAMPC Step %: 		 (MPC) 24.000%	 (NN) 24.000%	 (LQR) 52.000%
+Per Step MPC: 		 4.38e-04 +/- 2.52e-04 s
+Per Step Exp. MPC: 	 2.57e-04 +/- 5.38e-06 s
+Per Step MAMPC-MPC:  1.11e-03 +/- 3.97e-04 s
+Per Step MAMPC-NN: 	 8.23e-05 +/- 6.68e-05 s
+Per Step MAMPC-LQR:  1.60e-06 +/- 2.59e-07 s
+Per Step NN: 		 5.22e-05 +/- 1.19e-04 s
