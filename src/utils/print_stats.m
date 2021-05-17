@@ -50,8 +50,8 @@ function [] = print_stats(...
     perstep_tstd_mampc_lqr = std(elapsed_mampc(lqr_indices));
     fprintf(fp, 'Per Step MAMPC-LQR:  %.2e +/- %.2e s\n', ...
             perstep_tavg_mampc_lqr, perstep_tstd_mampc_lqr);
-    perstep_tavg_nn = mean(elapsed_nn);
-    perstep_tstd_nn = std(elapsed_nn);
+    perstep_tavg_nn = mean(elapsed_nn(10:end));
+    perstep_tstd_nn = std(elapsed_nn(10:end));
     fprintf(fp, 'Per Step NN: \t\t %.2e +/- %.2e s\n', ...
             perstep_tavg_nn, perstep_tstd_nn);
 end

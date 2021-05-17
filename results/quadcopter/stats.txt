@@ -8,4 +8,4 @@ Per Step Exp. MPC: 	 2.46e-04 +/- 2.01e-06 s
 Per Step MAMPC-MPC:  1.07e-03 +/- 4.04e-04 s
 Per Step MAMPC-NN: 	 2.47e-04 +/- 1.26e-04 s
 Per Step MAMPC-LQR:  1.68e-06 +/- 1.02e-07 s
-Per Step NN: 		 2.70e-04 +/- 1.04e-03 s
+Per Step NN: 		 3.73e-05 +/- 7.71e-07 s
