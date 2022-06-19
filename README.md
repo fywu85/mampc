@@ -9,6 +9,6 @@ The code contains four numerical experiments: pendulum, triple pendulum, bicopte
 To run the experiment, 
 ```
 gen [exp]  # generate necessary exp. mpc, imp. mpc, and nn models
-runn [exp] # run the generated models for running time comparison
+run [exp] # run the generated models for running time comparison
 ```
 where `[exp]` may be any one of the four `pendulum`, `triplependulum`, `bicopter`, and `quadcopter`.
