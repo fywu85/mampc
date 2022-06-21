@@ -5,7 +5,7 @@ function params = set_params()
     %% Simulation params
     params.Ts = 0.1;
     params.Tmax = 20;
-    params.tolerance = 1e-2;
+    params.tolerance = 0.5; %1e-2;
     params.limit = 10;
     params.x0 = [pi/2; 1/2];
     %% MPC params
@@ -27,7 +27,8 @@ function params = set_params()
     %% NN params
     params.nnrange = [pi, 1];
     params.nnarch = [10, 10];
-    params.maxepoch = 1e3;
+    params.maxepoch = 1e2;
+    params.ls = 50;
     %% MAMPC params
     params.run_mampc = @run_mampc_std;
     params.rlqr = 0.5;

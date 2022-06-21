@@ -40,7 +40,7 @@ function params = set_params()
     params.nnarch = [20, 10, 10, 20];
     params.maxepoch = 1e3;
     %% MAMPC params
-    params.run_mampc = @run_mampc_var2;
+    params.run_mampc = @run_mampc_wp;
     params.rlqr = 0.5;
     params.rwp = 2;
     params.Hlqr = 10;

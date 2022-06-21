@@ -1,5 +1,5 @@
 function [t_sol, x_sol, u_sol, u_sol_type, elapsed, success] = ...
-        run_mampc_var1(x0, params)
+        run_mampc_wp(x0, nnmove, params)
     load('mpc', 'mpc_obj', 'x_mpc');
     load('lqr', 'K');
     Ts = mpc_obj.MPC.Ts;
@@ -25,18 +25,22 @@ function [t_sol, x_sol, u_sol, u_sol_type, elapsed, success] = ...
         if lqr_switch
             u = -K*x_sim + params.u_eq;
             u_type = 'lqr';
+        elseif norm(x_sim, 2) < params.rwp
+            [unn, nn_switch] = is_converge(...
+                x_sim, params.rlqr, params.Hlqr, nnmove, params);
+            if nn_switch
+                u = unn;
+                u_type = 'nn';
+            else
+                u = mpcmove(mpc_obj, x_mpc, [], ref, []) + params.u_eq;
+                u_type = 'mpc';
+            end
         else
-            cycle_switch = mod(i_sol, params.cycle) ~= 0;
-            if cycle_switch
-                [unn, nn_switch] = is_converge(...
-                    x_sim, params.limit, 1, params);
-                if nn_switch
-                    u = unn;
-                    u_type = 'nn';
-                else
-                    u = mpcmove(mpc_obj, x_mpc, [], ref, []) + params.u_eq;
-                    u_type = 'mpc';
-                end                    
+            [unn, nn_switch] = is_converge(...
+                x_sim, params.rwp, params.Hwp, nnmove, params);
+            if nn_switch
+                u = unn;
+                u_type = 'nn';
             else
                 u = mpcmove(mpc_obj, x_mpc, [], ref, []) + params.u_eq;
                 u_type = 'mpc';

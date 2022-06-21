@@ -1,5 +1,5 @@
 function [t_sol, x_sol, u_sol, u_sol_type, elapsed, success] = ...
-        run_mampc_std(x0, params)
+        run_mampc_std(x0, nnmove, params)
     load('mpc', 'mpc_obj', 'x_mpc');
     load('lqr', 'K');
     Ts = mpc_obj.MPC.Ts;
@@ -27,7 +27,7 @@ function [t_sol, x_sol, u_sol, u_sol_type, elapsed, success] = ...
             u_type = 'lqr';
         else
             [unn, nn_switch] = is_converge(...
-                x_sim, params.rlqr, params.Hlqr, params);
+                x_sim, params.rlqr, params.Hlqr, nnmove, params);
             if nn_switch
                 u = unn;
                 u_type = 'nn';

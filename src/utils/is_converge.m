@@ -1,4 +1,4 @@
-function [unn, nn_switch] = is_converge(x, r, H, params)
+function [unn, nn_switch] = is_converge(x, r, H, nnmove, params)
     unn = nnmove(x);
     nn_switch = false;
     Ts = params.Ts;

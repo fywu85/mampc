@@ -20,15 +20,27 @@ function [] = gen(model)
         gen_nndata(params, data_path);
     end
     
-    nnmove_path = sprintf('%s/nnmove.m', data_path);
-    nn_path = sprintf('%s/nn.mat', data_path);
-    if isfile(nn_path) && isfile(nnmove_path)
+    load('nndata', 'X');
+    X = X';
+    indices = 0:params.ls:length(X);
+    iter_num = 0;
+    exist_flag = true;
+    for index = indices
+        nnmove_path = sprintf('%s/nnmove_%02d.m', data_path, iter_num);
+        nn_path = sprintf('%s/nn_%02d.mat', data_path, iter_num);
+        if not(isfile(nn_path) && isfile(nnmove_path))
+            exist_flag = false;
+            break;
+        end
+        iter_num = iter_num + 1;
+    end
+    if exist_flag
         fprintf('NN exists. Skip.\n');
     else
         fprintf('Generating NN...\n');
         gen_nn(params, data_path);
     end
-
+        
     lqr_path = sprintf('%s/lqr.mat', data_path);
     if isfile(lqr_path)
         fprintf('LQR data exists. Skip.\n');
