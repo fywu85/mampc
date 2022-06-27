@@ -13,6 +13,8 @@ function [t_sol, x_sol, u_sol, u_sol_type, elapsed, success] = ...
     i_sol = 1;
     t_sim = 0;
     x_sim = x0;
+    deadline = norm(x0, 2);
+    delta_deadline = (deadline - params.rlqr) / (params.Tmax / params.Ts);
     ref = zeros(2*params.Nx, 1);
     while i_sol <= Tmax / Ts - params.Hp && ...
             norm(x_sim, 2) > params.tolerance
@@ -28,9 +30,9 @@ function [t_sol, x_sol, u_sol, u_sol_type, elapsed, success] = ...
         else
             cycle_switch = mod(i_sol, params.cycle) ~= 0;
             if cycle_switch
-                [unn, nn_switch] = is_converge(...
+                [unn, nn_switch, nn_progress] = is_converge(...
                     x_sim, params.limit, 1, nnmove, params);
-                if nn_switch
+                if nn_switch && nn_progress < deadline
                     u = unn;
                     u_type = 'nn';
                 else
@@ -51,6 +53,7 @@ function [t_sol, x_sol, u_sol, u_sol_type, elapsed, success] = ...
         t_sim = t_sim + Ts;
         x_sim = x(end, :)';
         i_sol = i_sol + 1;
+        deadline = deadline - delta_deadline;
         
         if norm(x_sim, 2) > params.limit
             fprintf('System diverged. Abort at %.2f.\n', norm(x_sim, 2));

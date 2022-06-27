@@ -1,10 +1,11 @@
-function [unn, nn_switch] = is_converge(x, r, H, nnmove, params)
+function [unn, nn_switch, nn_progress] = is_converge(x, r, H, nnmove, params)
     unn = nnmove(x);
     nn_switch = false;
     Ts = params.Ts;
     u = unn;
     dx = params.ode([], x, u);
     x = x + dx*Ts;
+    nn_progress = norm(x, 2);
     %[~, x_pred] = ode113(@(t, y) mpc_params.ode(t, y, u), [0, Ts], x);
     %x = x_pred(end, :)';
     %x = mpc_params.A * x + mpc_params.B * u;
