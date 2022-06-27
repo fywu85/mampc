@@ -5,9 +5,9 @@ function params = set_params()
     %% Simulation params
     params.Ts = 0.1;
     params.Tmax = 20;
-    params.tolerance = 1e-2;
+    params.tolerance = 1e-1;
     params.limit = 1e2;
-    params.x0 = [pi/2; 1; pi/2; 1; pi/2; 1];
+    params.x0 = [pi/4; 1/2; pi/4; 1/2; pi/4; 1/2];
     %% MPC params
     params.Hp = 20;
     params.Hc = 20;
@@ -34,14 +34,12 @@ function params = set_params()
     %% NN params
     params.nnrange = [pi/2, 1, pi/2, 1, pi/2, 1];
     params.nnarch = [20, 10, 20];
-    params.maxepoch = 1e3;
+    params.maxepoch = 50;
+    params.ls = 100;
     %% MAMPC params
     params.run_mampc = @run_mampc_std;
     params.rlqr = 0.5;
-    %params.rwp = 1;
     params.Hlqr = 10;
-    %params.Hwp = 5;
-    %params.cycle = 2;
     %% Misc params
     params.plot = @plot_bicopter;
 end
