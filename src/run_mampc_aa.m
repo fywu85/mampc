@@ -16,6 +16,8 @@ function [t_sol, x_sol, u_sol, u_sol_type, elapsed, success] = ...
     deadline = norm(x0, 2);
     delta_deadline = (deadline - params.rlqr) / (params.Tmax / params.Ts);
     ref = zeros(2*params.Nx, 1);
+    % Run a dummy mpcmove to load the MPC object into memory
+    mpcmove(mpc_obj, x_mpc, [], ref, []);
     while i_sol <= Tmax / Ts - params.Hp && ...
             norm(x_sim, 2) > params.tolerance
         t_sol(i_sol) = t_sim;

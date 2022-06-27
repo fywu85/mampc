@@ -1,93 +1,58 @@
-function [] = plot_pendulum(...
-        t_sol_mpc, x_sol_mpc, elapsed_mpc, ...
-        t_sol_expmpc, x_sol_expmpc, elapsed_expmpc, ...
-        elapsed_nn, t_sol_mampc, x_sol_mampc, ...
-        u_sol_type_mampc, elapsed_mampc, elapsed_mampc_ot, params)
-    mpc_indices = find(u_sol_type_mampc == 'mpc');
-    nn_indices = find(u_sol_type_mampc == 'nn');
-    lqr_indices = find(u_sol_type_mampc == 'lqr');
-    print_stats('results/pendulum/stats.txt', ...
-        elapsed_mpc, elapsed_expmpc, elapsed_mampc, elapsed_nn, ...
-        mpc_indices(2:end), nn_indices, lqr_indices);
-    
+function [] = plot_pendulum(elapsed_mpc, elapsed_nn, elapsed_mampc, ...
+                        t_sol, x_sol, u_sol, utype_sol, params, index)
     figure;
-    set(gcf, 'position', [1000, 1000, 750, 300]);
+    set(gcf, 'position', [100, 100, 1000, 300]);
+    ax1 = axes('Position', [0.1, 0.15, 0.25, 0.7]);
+    axes(ax1);
     set(gca, 'FontSize', 18);
     set(gca, 'linewidth', 2);
     box on;
     hold on;
-    plot(t_sol_mpc, vecnorm(x_sol_mpc, 2, 2), ...
-        'mo-', 'MarkerSize', 18, 'LineWidth', 2);
-    plot(t_sol_expmpc, vecnorm(x_sol_expmpc, 2, 2), ...
-        'b*-', 'MarkerSize', 18, 'LineWidth', 2);
-    plot(t_sol_mampc(mpc_indices), ...
-        vecnorm(x_sol_mampc(mpc_indices, :), 2, 2), ...
-        'rs', 'MarkerSize', 18, 'LineWidth', 2);
-    plot(t_sol_mampc(nn_indices), ...
-        vecnorm(x_sol_mampc(nn_indices, :), 2, 2), ...
-        'r^', 'MarkerSize', 18, 'LineWidth', 2);
-    plot(t_sol_mampc(lqr_indices), ...
-        vecnorm(x_sol_mampc(lqr_indices, :), 2, 2), ...
-        'rp', 'MarkerSize', 18, 'LineWidth', 2);
-    yline(params.rlqr, 'k:', 'LineWidth', 2);
-    plot(t_sol_mampc, vecnorm(x_sol_mampc, 2, 2), 'r', 'LineWidth', 2);
+    for i = 1:length(t_sol)-1
+        [t, x] = ode45(@(t, y) params.ode(t, y, u_sol(i)), ...
+                       [0, params.Ts], x_sol(i, :));
+        plot(t_sol(i) + t, x(:, 1), 'b', 'LineWidth', 2, ...
+             'HandleVisibility', 'off');
+        plot(t_sol(i) + t, x(:, 2), 'r', 'LineWidth', 2, ...
+             'HandleVisibility', 'off');
+    end
+    plot(t_sol, x_sol(:, 1), 'bo', 'MarkerSize', 18, 'LineWidth', 2, ...
+         'DisplayName', '$\theta$');
+    plot(t_sol, x_sol(:, 2), 'r^', 'MarkerSize', 18, 'LineWidth', 2, ...
+         'DisplayName', '$\dot{\theta}$');
     hold off;
-    xlim([0, 3]);
-    ylim([5e-3, 1e1]);
-    set(gca, 'YScale', 'log');
-    xlabel('Simulation Time (s)');
-    ylabel('State Norm ||x||_2');
-    legend('Imp. MPC', 'Exp. MPC', ...
-        'MAMPC-MPC', 'MAMPC-NN', 'MAMPC-LQR', 'R-LQR', ...
-        'Location', 'eastoutside', 'Box', 'off');
-    exportgraphics(gcf, 'results/pendulum/pendulum_state.eps');
-    exportgraphics(gcf, 'results/pendulum/pendulum_state.png', ...
-        'Resolution', 300);
+    xlim([t_sol(1), t_sol(end)]);
+    xlabel('Time (s)');
+    ylabel('States');
+    legend('Location', 'eastoutside', 'Box', 'off', 'Interpreter', 'latex');
 
-    figure;
-    set(gcf, 'position', [1000, 1000, 750, 300]);
+    ax2 = axes('Position', [0.45, 0.15, 0.5, 0.7]);
+    axes(ax2);
+    mpc_indices = find(utype_sol == 'mpc');
+    nn_indices = find(utype_sol == 'nn');
+    lqr_indices = find(utype_sol == 'lqr');
     set(gca, 'FontSize', 18);
     set(gca, 'linewidth', 2);
     box on;
     hold on;
-    plot(t_sol_mpc(2:end-1), elapsed_mpc(2:end), ...
-        'mo-', 'MarkerSize', 18, 'LineWidth', 2);
-    plot(t_sol_expmpc(2:end-1), elapsed_expmpc(2:end), ...
-        'b*-', 'MarkerSize', 18, 'LineWidth', 2);
-    mpc_indices = mpc_indices(2:end);
-    plot(t_sol_mampc(mpc_indices), elapsed_mampc(mpc_indices), ...
-        'rs', 'MarkerSize', 18, 'LineWidth', 2);
-    plot(t_sol_mampc(nn_indices), elapsed_mampc(nn_indices), ...
-        'r^', 'MarkerSize', 18, 'LineWidth', 2);
-    plot(t_sol_mampc(lqr_indices), elapsed_mampc(lqr_indices), ...
-        'rp', 'MarkerSize', 18, 'LineWidth', 2);
-    yline(mean(elapsed_nn(10:end)), 'k:', 'LineWidth', 2);
-    plot(t_sol_mampc(2:end-1), elapsed_mampc(2:end), ...
-        'r', 'LineWidth', 2);
+    plot(t_sol(mpc_indices), elapsed_mampc(mpc_indices), 'rs', ...
+        'MarkerSize', 18, 'LineWidth', 2, 'DisplayName', 'MAMPC-MPC');
+    plot(t_sol(nn_indices), elapsed_mampc(nn_indices), 'r^', ...
+        'MarkerSize', 18, 'LineWidth', 2, 'DisplayName', 'MAMPC-NN');
+    plot(t_sol(lqr_indices), elapsed_mampc(lqr_indices), 'rp', ...
+        'MarkerSize', 18, 'LineWidth', 2, 'DisplayName', 'MAMPC-LQR');
+    yline(elapsed_mpc, 'k--', 'LineWidth', 2, 'DisplayName', 'Imp. MPC');
+    yline(elapsed_nn, 'k:', 'LineWidth', 2, 'DisplayName', 'NN');
+    plot(t_sol(1:end-1), elapsed_mampc(1:end), 'r', ...
+        'LineWidth', 2, 'HandleVisibility', 'off');
     hold off;
-    xlim([0, 3]);
-    ylim([8e-7, 3e-3]);
+    xlim([t_sol(1), t_sol(end)]);
+    ylim([5e-7, 5e-3]);
+    yticks([1e-6, 1e-5, 1e-4, 1e-3]);
     set(gca, 'YScale', 'log');
-    xlabel('Simulation Time (s)');
+    xlabel('Time (s)');
     ylabel('Running Time (s)');
-    legend('Imp. MPC', 'Exp. MPC', ...
-        'MAMPC-MPC', 'MAMPC-NN', 'MAMPC-LQR', 'NN', ...
-        'Location', 'eastoutside', 'Box', 'off');
-    exportgraphics(gcf, 'results/pendulum/pendulum_time.eps');
-    exportgraphics(gcf, 'results/pendulum/pendulum_time.png', ...
-        'Resolution', 300);
-    
-    figure;
-    set(gcf, 'position', [1000, 1000, 750, 300]);
-    set(gca, 'FontSize', 18);
-    set(gca, 'linewidth', 2);
-    box on;
-    hold on;
-    plot(elapsed_mampc_ot(:, 1), elapsed_mampc_ot(:, 2), 'k', 'LineWidth', 2);
-    hold off;
-    xlim([0, elapsed_mampc_ot(end, 1)]);
-%     ylim([0.045, 0.055]);
-    set(gca, 'YScale', 'log');
-    xlabel('Sample Size');
-    ylabel('Running Time (s)');
+    legend('Location', 'eastoutside', 'Box', 'off');
+
+    sgtitle(sprintf('Sample Size = %d', params.ls * index));
 end

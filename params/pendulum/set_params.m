@@ -35,4 +35,5 @@ function params = set_params()
     params.Hlqr = 5;
     %% Misc params
     params.plot = @plot_pendulum;
+    params.plot_indices = [0, 6, 9, 10];
 end
