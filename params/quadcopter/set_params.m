@@ -49,4 +49,5 @@ function params = set_params()
     %params.cycle = 2;
     %% Misc params
     params.plot = @plot_quadcopter;
+    params.plot_indices = [0, 2, 3];
 end

@@ -1,11 +1,11 @@
-function [] = debug(model)
+function [] = run(model)
     close all; clc; restoredefaultpath;
     mpcverbosity off;
 
     set_path(model);
     params = set_params();
     x0 = params.x0;
-    rt_iter = 50;
+    rt_iter = 10;
     
     fprintf('Running numerical experiments...\n');
     elapsed_mpc = zeros(rt_iter, 1);

@@ -42,4 +42,5 @@ function params = set_params()
     params.Hlqr = 10;
     %% Misc params
     params.plot = @plot_bicopter;
+    params.plot_indices = [0, 3, 10];
 end

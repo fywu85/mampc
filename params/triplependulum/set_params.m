@@ -5,9 +5,9 @@ function params = set_params()
     %% Simulation params
     params.Ts = 0.1;
     params.Tmax = 20;
-    params.tolerance = 1e-2;
+    params.tolerance = 1e-1;
     params.limit = 1e2;
-    params.x0 = [pi/6; 1; pi/6; 1; pi/6; 1];
+    params.x0 = [pi/6; 1; -pi/6; 1; pi/6; 1];
     %% MPC params
     params.Hp = 5;
     params.Hc = 5;
@@ -38,4 +38,5 @@ function params = set_params()
     params.cycle = 2;
     %% Misc params
     params.plot = @plot_triplependulum;
+    params.plot_indices = [0, 2, 4];
 end
