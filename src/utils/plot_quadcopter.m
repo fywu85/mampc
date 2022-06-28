@@ -2,10 +2,10 @@ function [] = plot_quadcopter( ...
         elapsed_mpc, elapsed_nn, elapsed_mampc, ...
         t_sol, x_sol, u_sol, utype_sol, params, index)
     figure;
-    set(gcf, 'position', [100, 100, 1000, 300]);
+    set(gcf, 'position', [100, 100, 1000, 200]);
     ax1 = axes('Position', [0.1, 0.15, 0.25, 0.7]);
     axes(ax1);
-    set(gca, 'FontSize', 18);
+    set(gca, 'FontSize', 14);
     set(gca, 'linewidth', 2);
     box on;
     hold on;
@@ -44,7 +44,7 @@ function [] = plot_quadcopter( ...
     mpc_indices = find(utype_sol == 'mpc');
     nn_indices = find(utype_sol == 'nn');
     lqr_indices = find(utype_sol == 'lqr');
-    set(gca, 'FontSize', 18);
+    set(gca, 'FontSize', 14);
     set(gca, 'linewidth', 2);
     box on;
     hold on;
@@ -72,8 +72,6 @@ function [] = plot_quadcopter( ...
     xlabel('Time (s)');
     ylabel('Running Time (s)');
     legend('Location', 'eastoutside', 'Box', 'off');
-
-    sgtitle(sprintf('Sample Size = %d', params.ls * index));
 
     exportgraphics(gcf, ...
         sprintf('results/quadcopter/quadcopter_%d.png', params.ls * index));
