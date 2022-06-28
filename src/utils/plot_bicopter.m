@@ -74,4 +74,7 @@ function [] = plot_bicopter( ...
     legend('Location', 'eastoutside', 'Box', 'off');
 
     sgtitle(sprintf('Sample Size = %d', params.ls * index));
+
+    exportgraphics(gcf, ...
+        sprintf('results/bicopter/bicopter_%d.png', params.ls * index));
 end

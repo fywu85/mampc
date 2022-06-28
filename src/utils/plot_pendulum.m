@@ -68,4 +68,7 @@ function [] = plot_pendulum( ...
     legend('Location', 'eastoutside', 'Box', 'off');
 
     sgtitle(sprintf('Sample Size = %d', params.ls * index));
+
+    exportgraphics(gcf, ...
+        sprintf('results/pendulum/pendulum_%d.png', params.ls * index));
 end
