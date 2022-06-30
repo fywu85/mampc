@@ -13,8 +13,9 @@ function [t_sol, x_sol, u_sol, u_sol_type, elapsed, success] = ...
     i_sol = 1;
     t_sim = 0;
     x_sim = x0;
-    deadline = norm(x0, 2);
-    delta_deadline = (deadline - params.rlqr) / (params.Tmax / params.Ts);
+    deadline = 5 * norm(x0, 2);  % Treat this as X_0
+    % Uncomment below for a successively shrinking X_0
+    delta_deadline = 0;%(deadline - params.rlqr) / (params.Tmax / params.Ts);
     ref = zeros(2*params.Nx, 1);
     % Run a dummy mpcmove to load the MPC object into memory
     mpcmove(mpc_obj, x_mpc, [], ref, []);

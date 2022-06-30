@@ -27,7 +27,7 @@ function params = set_params()
     %% NN params
     params.nnrange = [pi/6, 1, pi/6, 1, pi/6, 1];
     params.nnarch = [20, 10, 20];
-    params.maxepoch = 2000;
+    params.maxepoch = 5000;
     params.ls = 5000;
     %% MAMPC params
     params.run_mampc = @run_mampc_aa;
@@ -38,5 +38,5 @@ function params = set_params()
     params.cycle = 2;
     %% Misc params
     params.plot = @plot_triplependulum;
-    params.plot_indices = [0, 2, 4];
+    params.plot_indices = [0, 4, 5];
 end

@@ -34,13 +34,13 @@ function params = set_params()
     %% NN params
     params.nnrange = [pi/2, 1, pi/2, 1, pi/2, 1];
     params.nnarch = [20, 10, 20];
-    params.maxepoch = 50;
-    params.ls = 100;
+    params.maxepoch = 25;
+    params.ls = 50;
     %% MAMPC params
     params.run_mampc = @run_mampc_std;
     params.rlqr = 0.5;
     params.Hlqr = 10;
     %% Misc params
     params.plot = @plot_bicopter;
-    params.plot_indices = [0, 3, 10];
+    params.plot_indices = [0, 1, 7];
 end
