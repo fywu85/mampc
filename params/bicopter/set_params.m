@@ -5,9 +5,9 @@ function params = set_params()
     %% Simulation params
     params.Ts = 0.1;
     params.Tmax = 20;
-    params.tolerance = 1e-1;
+    params.tolerance = 5e-2;
     params.limit = 1e2;
-    params.x0 = [pi/4; 1/2; pi/4; 1/2; pi/4; 1/2];
+    params.x0 = [pi/4; 1/4; pi/4; 1/4; pi/4; 1/4];
     %% MPC params
     params.Hp = 20;
     params.Hc = 20;

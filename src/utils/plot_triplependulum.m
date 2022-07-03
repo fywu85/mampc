@@ -33,7 +33,7 @@ function [] = plot_triplependulum( ...
          'DisplayName', '$\theta_{3}$');
     yline(0, 'k:', 'LineWidth', 2, 'HandleVisibility', 'off');
     hold off;
-    xlim([0, 1.3]);
+    xlim([0, 1.9]);
     ylim([-1.2, 1.2]);
     yticks([-1, 0, 1]);
     xlabel('Time (s)');
@@ -66,7 +66,7 @@ function [] = plot_triplependulum( ...
     plot(t_sol(1:end-1), elapsed_mampc(1:end), 'r', ...
         'LineWidth', 2, 'HandleVisibility', 'off');
     hold off;
-    xlim([0, 1.3]);
+    xlim([0, 1.9]);
     ylim([5e-7, 5e-3]);
     yticks([1e-6, 1e-5, 1e-4, 1e-3]);
     set(gca, 'YScale', 'log');

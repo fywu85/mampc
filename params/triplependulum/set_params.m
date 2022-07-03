@@ -5,9 +5,9 @@ function params = set_params()
     %% Simulation params
     params.Ts = 0.1;
     params.Tmax = 20;
-    params.tolerance = 1e-1;
+    params.tolerance = 1e-2;
     params.limit = 1e2;
-    params.x0 = [pi/6; 1; -pi/6; 1; pi/6; 1];
+    params.x0 = [pi/5; 1; -pi/5; 1; pi/5; 1];
     %% MPC params
     params.Hp = 5;
     params.Hc = 5;
@@ -32,11 +32,9 @@ function params = set_params()
     %% MAMPC params
     params.run_mampc = @run_mampc_aa;
     params.rlqr = 0.4;
-    %params.rwp = 1;
     params.Hlqr = 5;
-    %params.Hwp = 5;
     params.cycle = 2;
     %% Misc params
     params.plot = @plot_triplependulum;
-    params.plot_indices = [0, 4, 5];
+    params.plot_indices = [0, 4, 6];
 end
