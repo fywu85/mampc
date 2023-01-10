@@ -36,7 +36,7 @@ function [] = demostrate_rbmargin()
     legend('Box', 'off', 'FontSize', 16);
     xlim([0, 2.5]);
     ylim([0.09, 5]);
-    exportgraphics(gcf, 'demostrate_rbmargin.pdf');
+    exportgraphics(gcf, 'rbmargin.pdf');
 end
 
 function [t_sol, n_sol] = run_model(x0, params, bias)
