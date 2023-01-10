@@ -12,7 +12,8 @@ function [] = diagnose_mpcrt()
     legend('Box', 'off', 'FontSize', 16);
     ylim([3.65e-4, 4e-4]);
     xlim([0, 2]);
-    exportgraphics(gcf, 'bicopter_mpcrt.pdf');
+    export_csv(t_bicopter, elapsed_bicopter, 'results/bicopter_mpcrt.csv');
+%     exportgraphics(gcf, 'bicopter_mpcrt.pdf');
 end
 
 function [t_sol, elapsed_avg] = diagnose_model(model)

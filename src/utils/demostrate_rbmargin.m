@@ -8,20 +8,21 @@ function [] = demostrate_rbmargin()
     params.rlqr = 0.35;
     x0 = [0.65; -4];
     figure;
-    set(gcf, 'position', [100, 100, 500, 300]);
+    set(gcf, 'position', [100, 100, 450, 250]);
     set(gca, 'FontSize', 16);
     set(gca, 'linewidth', 2);
     set(gca, 'YScale', 'log');
+    box on;
     hold on;
     
-    [t_true, n_true] = run_model(x0, params, 0);
-    [t_biased, n_biased] = run_model(x0, params, 0.2);
+    [t_est, n_est] = run_model(x0, params, 0);
+    [t_true, n_true] = run_model(x0, params, 0.2);
 
-    plot(t_true, n_true, '.-', ...
-        'MarkerSize', 40, 'LineWidth', 2, ...
+    plot(t_est, n_est, '^-', ...
+        'MarkerSize', 10, 'LineWidth', 2, ...
         'DisplayName', 'Estimated Trajectory');
-    plot(t_biased, n_biased, '.-', ...
-        'MarkerSize', 40, 'LineWidth', 2, ...
+    plot(t_true, n_true, 'o-', ...
+        'MarkerSize', 10, 'LineWidth', 2, ...
         'DisplayName', 'True Trajectory');
     
     yline(params.rlqr, 'r:', 'LineWidth', 2, 'HandleVisibility', 'off');
@@ -32,11 +33,13 @@ function [] = demostrate_rbmargin()
     hold off;
     
     xlabel('Time (s)');
-    ylabel('L2 Norm');
+    ylabel('Distance to Eq.');
     legend('Box', 'off', 'FontSize', 16);
     xlim([0, 2.5]);
     ylim([0.09, 5]);
-    exportgraphics(gcf, 'rbmargin.pdf');
+    export_csv(t_est, n_est, 'results/rbmargin_est.csv');
+    export_csv(t_true, n_true, 'results/rbmargin_true.csv');
+%     exportgraphics(gcf, 'rbmargin.png');
 end
 
 function [t_sol, n_sol] = run_model(x0, params, bias)
